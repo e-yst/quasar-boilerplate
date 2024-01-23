@@ -9,6 +9,16 @@
 			"packages": "bash-completion,curl"
 		},
 		"ghcr.io/devcontainers-contrib/features/quasar-cli:2": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"Vue.volar",
+				"EditorConfig.EditorConfig",
+				"esbenp.prettier-vscode",
+				"dbaeumer.vscode-eslint"
+			]
+		}
 	}
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
