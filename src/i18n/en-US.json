@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "email": "Email Address",
+    "login": "Login",
+    "login_caption": "Login below to access your account",
+    "password": "Password",
+    "register": "Register",
+    "register_caption": "Don't have an account yet?"
+  }
+}
