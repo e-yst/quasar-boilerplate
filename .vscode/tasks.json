@@ -9,7 +9,8 @@
       "command": "quasar",
       "args": [
         "dev"
-      ]
+      ],
+      "problemMatcher": []
     }
   ]
 }
