@@ -54,4 +54,5 @@ export const useAuthStore = defineStore('auth', {
       this.expiresAt = undefined;
     },
   },
+  persist: true,
 });
