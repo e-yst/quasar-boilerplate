@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
+    <q-header class="bg-grey-7" elevated>
+      <q-toolbar class="q-py-sm">
         <q-btn
           aria-label="Menu"
           dense
@@ -13,7 +13,46 @@
 
         <q-toolbar-title> Quasar App </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn dense flat icon="sym_o_account_circle" round size="lg">
+          <q-popup-proxy>
+            <q-card class="bg-grey-9" style="width: 240px">
+              <q-card-section class="row justify-center">
+                <div class="text-grey-3" style="font-size: 16px">
+                  {{ userDetail.email }}
+                </div>
+              </q-card-section>
+
+              <q-card-section class="row justify-center">
+                <q-avatar
+                  color="grey-3"
+                  font-size="120px"
+                  icon="account_circle"
+                  size="124px"
+                />
+              </q-card-section>
+
+              <q-card-section class="row justify-center">
+                <div class="text-grey-3" style="font-size: 24px">
+                  {{ $t('auth.greeting', { name: userDetail.nickname }) }}
+                </div>
+              </q-card-section>
+
+              <q-card-section class="row justify-center">
+                <q-btn
+                  class="q-pa-md"
+                  flat
+                  icon="sym_o_logout"
+                  :label="$t('auth.logout')"
+                  :loading="loading"
+                  no-caps
+                  rounded
+                  text-color="grey-3"
+                  @click="logout"
+                />
+              </q-card-section>
+            </q-card>
+          </q-popup-proxy>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -36,10 +75,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import EssentialLink, {
   EssentialLinkProps,
 } from 'components/EssentialLink.vue';
+import { useAuthStore } from 'src/stores/auth';
+import { createLogout } from 'src/utils/ory';
+import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { api } from 'src/boot/axios';
 
 const essentialLinks: EssentialLinkProps[] = [
   {
@@ -86,9 +131,38 @@ const essentialLinks: EssentialLinkProps[] = [
   },
 ];
 
+const authStore = useAuthStore();
+const $q = useQuasar();
+const { t: $t } = useI18n();
+const router = useRouter();
+
+const userDetail = computed(() => authStore.getAuthDetail);
+const loading = ref(false);
+
 const leftDrawerOpen = ref(false);
 
-function toggleLeftDrawer() {
+const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
-}
+};
+
+const logout = async () => {
+  loading.value = true;
+  try {
+    const logoutFlowRes = await createLogout();
+    const res = await api.get(`${process.env.API_URL}/self-service/logout`, {
+      params: { token: logoutFlowRes.logout_token },
+      headers: {
+        'Content-Type': 'applicaton/json',
+        Accept: 'application/json',
+      },
+    });
+    if (res.status === 204) {
+      authStore.reset();
+      $q.notify({ message: $t('auth.logout_succeed'), type: 'info' });
+      router.push({ name: 'login' });
+    }
+  } finally {
+    loading.value = false;
+  }
+};
 </script>

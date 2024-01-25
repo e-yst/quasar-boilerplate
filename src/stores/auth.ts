@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia';
-import type { SuccessfulNativeRegistration } from '@ory/client';
+import type {
+  SuccessfulNativeRegistration,
+  SuccessfulNativeLogin,
+} from '@ory/client';
 import { getDateFromISO } from 'src/utils/common';
 
 type AuthDetail = {
@@ -19,10 +22,11 @@ export const useAuthStore = defineStore('auth', {
     expiresAt: undefined,
   }),
   getters: {
-    getAuthDetail: (state): AuthDetail => state,
+    getAuthDetail: (state: AuthDetail) => state,
   },
+
   actions: {
-    setAuthDetailFromRes(res: SuccessfulNativeRegistration) {
+    setAuthDetailFromReg(res: SuccessfulNativeRegistration) {
       this.userId = res.identity.id;
       this.email = res.identity.traits.email;
       this.nickname = res.identity.traits.nickname;
@@ -31,6 +35,23 @@ export const useAuthStore = defineStore('auth', {
         if (res.session.expires_at)
           this.expiresAt = getDateFromISO(res.session.expires_at);
       }
+    },
+    setAuthDetailFromLogin(res: SuccessfulNativeLogin) {
+      if (res.session.identity) {
+        this.userId = res.session.identity.id;
+        this.email = res.session.identity.traits.email;
+        this.nickname = res.session.identity.traits.nickname;
+      }
+      this.sessionId = res.session.id;
+      if (res.session.expires_at)
+        this.expiresAt = getDateFromISO(res.session.expires_at);
+    },
+    reset() {
+      this.userId = undefined;
+      this.sessionId = undefined;
+      this.email = undefined;
+      this.nickname = undefined;
+      this.expiresAt = undefined;
     },
   },
 });

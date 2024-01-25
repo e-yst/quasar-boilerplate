@@ -9,33 +9,39 @@
       </q-card-section>
 
       <q-card-section>
-        <q-input
-          v-model="email"
-          dense
-          :label="$t('auth.email')"
-          outlined
-        ></q-input>
-        <q-input
-          v-model="password"
-          class="q-mt-md"
-          dense
-          :label="$t('auth.password')"
-          outlined
-          type="password"
-        ></q-input>
-      </q-card-section>
+        <q-form @submit="login">
+          <q-input
+            v-model.trim="email"
+            dense
+            :label="$t('auth.email')"
+            lazy-rules
+            outlined
+            :rules="[(val) => !!val || $t('auth.field_is_required')]"
+            type="email"
+          ></q-input>
+          <q-input
+            v-model="password"
+            class="q-mt-sm"
+            dense
+            :label="$t('auth.password')"
+            lazy-rules
+            outlined
+            :rules="[(val) => !!val || $t('auth.field_is_required')]"
+            type="password"
+          ></q-input>
 
-      <q-card-section>
-        <q-btn
-          class="full-width"
-          color="dark"
-          :label="$t('auth.login')"
-          no-caps
-          rounded
-          size="md"
-          style="border-radius: 8px"
-          @click="login"
-        ></q-btn>
+          <q-btn
+            class="q-mt-sm full-width"
+            color="dark"
+            :label="$t('auth.login')"
+            :loading="loading"
+            no-caps
+            rounded
+            size="md"
+            style="border-radius: 8px"
+            type="submit"
+          ></q-btn>
+        </q-form>
       </q-card-section>
 
       <q-card-section
@@ -60,26 +66,71 @@
 </template>
 
 <script setup lang="ts">
-import { createLogin } from 'src/utils/ory';
+import { createLogin, submitLogin } from 'src/utils/ory';
+import { LoginFlow } from '@ory/client';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
+import { useAuthStore } from 'src/stores/auth';
+import { useI18n } from 'vue-i18n';
+import { getDateFromISO } from 'src/utils/common';
+
+const router = useRouter();
+const $q = useQuasar();
+const authStore = useAuthStore();
+const { t: $t } = useI18n();
 
 const email = ref('');
 const password = ref('');
 const loading = ref(false);
-let loginFlow = undefined;
+const loginFlow = ref<LoginFlow | undefined>(undefined);
 
-async function login() {
+const login = async () => {
   loading.value = true;
   try {
-    const res = await createLogin();
-    loginFlow = res;
-    console.log(res);
+    await getLoginFlow();
+    if (!loginFlow.value) throw Error;
+    const csrfNode = loginFlow.value.ui.nodes.find(
+      (el) => el.attributes.name === 'csrf_token'
+    );
+    const loginBody = {
+      method: 'password',
+      csrf_token: csrfNode?.attributes.value,
+      identifier: email.value,
+      password: password.value,
+    };
+    const res = await submitLogin(loginFlow.value.id, loginBody);
+    authStore.setAuthDetailFromLogin(res);
+    $q.notify({ message: $t('auth.login_succeed'), type: 'positive' });
+    router.push({ name: 'index' });
   } catch (error) {
-    console.log(error);
+    for (const msg of error.response.data.ui.messages)
+      $q.notify({
+        message: $t(`auth.kratos_error_${msg.id}`),
+        type: 'negative',
+      });
+    password.value = '';
   } finally {
     loading.value = false;
   }
-}
+};
+
+const getLoginFlow = async () => {
+  if (
+    loginFlow.value &&
+    getDateFromISO(loginFlow.value.expires_at) > new Date()
+  )
+    return;
+  try {
+    const res = await createLogin();
+    loginFlow.value = res;
+  } catch (error) {
+    if (error.response.data.error.id === 'session_already_available') {
+      $q.notify({ message: $t('auth.already_logged_in') });
+      router.push({ name: 'index' });
+    }
+  }
+};
 </script>
 
 <style scoped>

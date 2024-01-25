@@ -21,7 +21,7 @@
           ></q-input>
           <q-input
             v-model.trim="nickname"
-            class="q-mt-md"
+            class="q-mt-sm"
             dense
             :label="$t('auth.nickname')"
             lazy-rules
@@ -30,7 +30,7 @@
           ></q-input>
           <q-input
             v-model="password"
-            class="q-mt-md"
+            class="q-mt-sm"
             dense
             :label="$t('auth.password')"
             lazy-rules
@@ -40,7 +40,7 @@
           ></q-input>
           <q-input
             v-model="confirmPass"
-            class="q-mt-md"
+            class="q-mt-sm"
             dense
             :label="$t('auth.confirm_password')"
             lazy-rules
@@ -52,18 +52,17 @@
             type="password"
           ></q-input>
 
-          <div class="row q-mt-md">
-            <q-btn
-              class="full-width"
-              color="dark"
-              :label="$t('auth.register')"
-              no-caps
-              rounded
-              size="md"
-              style="border-radius: 8px"
-              type="submit"
-            ></q-btn>
-          </div>
+          <q-btn
+            class="q-mt-sm full-width"
+            color="dark"
+            :label="$t('auth.register')"
+            :loading="loading"
+            no-caps
+            rounded
+            size="md"
+            style="border-radius: 8px"
+            type="submit"
+          ></q-btn>
         </q-form>
       </q-card-section>
 
@@ -103,10 +102,10 @@ const $q = useQuasar();
 const authStore = useAuthStore();
 const { t: $t } = useI18n();
 
-const email = ref('sfdjs@lsdkjfds.com');
+const email = ref('test01@dummy.com');
 const password = ref('heyP@ssw0rd');
 const confirmPass = ref('heyP@ssw0rd');
-const nickname = ref('qqq');
+const nickname = ref('test01');
 const loading = ref(false);
 const regFlow = ref<RegistrationFlow | undefined>(undefined);
 
@@ -126,9 +125,10 @@ const register = async () => {
       password: password.value,
     };
     const res = await updateRegistration(regFlow.value.id, regBody);
-    authStore.setAuthDetailFromRes(res);
+    authStore.setAuthDetailFromReg(res);
+    $q.notify({ message: $t('auth.register_succeed'), type: 'positive' });
+    router.push({ name: 'index' });
   } catch (error) {
-    console.log(error);
     if (error.response.data.error.id === 'session_already_available') {
       $q.notify({ message: $t('auth.already_logged_in') });
       router.push({ name: 'index' });

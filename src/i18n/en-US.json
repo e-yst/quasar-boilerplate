@@ -1,16 +1,22 @@
 {
   "auth": {
+    "already_logged_in": "You are already logged in",
     "back_to": "Back to",
     "confirm_password": "Confirm Password",
     "email": "Email Address",
     "field_is_required": "Field is required",
+    "greeting": "Hello, {name}!",
     "login": "Login",
     "login_caption": "Login below to access your account",
+    "login_succeed": "Login succeed",
+    "logout": "Logout",
+    "logout_succeed": "Logout succeed",
     "nickname": "Nickname",
     "password": "Password",
     "password_not_match": "Password doesn't match the re-typed password",
     "register": "Register",
     "register_caption": "Don't have an account yet?",
-    "already_logged_in": "You are already logged in"
+    "register_succeed": "Register succeed",
+    "kratos_error_4000006": "The provided credentials are invalid, check for spelling mistakes in your password or username, email address, or phone number."
   }
 }
