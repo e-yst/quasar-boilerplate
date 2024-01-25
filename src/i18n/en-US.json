@@ -1,10 +1,16 @@
 {
   "auth": {
+    "back_to": "Back to",
+    "confirm_password": "Confirm Password",
     "email": "Email Address",
+    "field_is_required": "Field is required",
     "login": "Login",
     "login_caption": "Login below to access your account",
+    "nickname": "Nickname",
     "password": "Password",
+    "password_not_match": "Password doesn't match the re-typed password",
     "register": "Register",
-    "register_caption": "Don't have an account yet?"
+    "register_caption": "Don't have an account yet?",
+    "already_logged_in": "You are already logged in"
   }
 }
