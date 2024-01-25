@@ -1,8 +1,5 @@
-import {
-  Configuration,
-  FrontendApi,
-  UpdateRegistrationFlowBody,
-} from '@ory/client';
+import { Configuration, FrontendApi } from '@ory/client';
+import type { UpdateRegistrationFlowBody } from '@ory/client';
 
 const frontend = new FrontendApi(
   new Configuration({
@@ -29,4 +26,9 @@ export async function updateRegistration(
 export async function getCurrentSession() {
   const session = await frontend.toSession();
   return session;
+}
+
+export async function createLogin(aal?: string, refresh?: boolean) {
+  const resp = await frontend.createBrowserLoginFlow({ aal, refresh });
+  return resp.data;
 }

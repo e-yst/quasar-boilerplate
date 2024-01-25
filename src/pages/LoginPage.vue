@@ -34,29 +34,52 @@
           rounded
           size="md"
           style="border-radius: 8px"
+          @click="login"
         ></q-btn>
       </q-card-section>
 
-      <q-card-section class="text-center q-pt-none">
+      <q-card-section
+        class="row items-center justify-center text-center q-pt-none"
+      >
         <div class="text-grey-8">
           {{ $t('auth.register_caption') }}
-          <a
-            class="text-dark text-weight-bold"
-            href="#"
-            style="text-decoration: none"
-            >{{ $t('auth.register') }}</a
-          >
         </div>
+        <q-btn
+          class="text-bold"
+          dense
+          flat
+          :label="$t('auth.register')"
+          no-caps
+          rounded
+          text-color="dark"
+          to="register"
+        />
       </q-card-section>
     </q-card>
   </q-page>
 </template>
 
 <script setup lang="ts">
+import { createLogin } from 'src/utils/ory';
 import { ref } from 'vue';
 
 const email = ref('');
 const password = ref('');
+const loading = ref(false);
+let loginFlow = undefined;
+
+async function login() {
+  loading.value = true;
+  try {
+    const res = await createLogin();
+    loginFlow = res;
+    console.log(res);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loading.value = false;
+  }
+}
 </script>
 
 <style scoped>
