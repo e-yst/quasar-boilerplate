@@ -33,6 +33,7 @@
           <q-btn
             class="q-mt-sm full-width"
             color="dark"
+            icon="sym_o_login"
             :label="$t('auth.login')"
             :loading="loading"
             no-caps
