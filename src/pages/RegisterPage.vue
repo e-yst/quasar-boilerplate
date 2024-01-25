@@ -55,6 +55,7 @@
           <q-btn
             class="q-mt-sm full-width"
             color="dark"
+            icon="sym_o_person_add"
             :label="$t('auth.register')"
             :loading="loading"
             no-caps
@@ -102,10 +103,10 @@ const $q = useQuasar();
 const authStore = useAuthStore();
 const { t: $t } = useI18n();
 
-const email = ref('test01@dummy.com');
-const password = ref('heyP@ssw0rd');
-const confirmPass = ref('heyP@ssw0rd');
-const nickname = ref('test01');
+const email = ref('');
+const password = ref('');
+const confirmPass = ref('');
+const nickname = ref('');
 const loading = ref(false);
 const regFlow = ref<RegistrationFlow | undefined>(undefined);
 
