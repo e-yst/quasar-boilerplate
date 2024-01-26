@@ -90,13 +90,13 @@
 
 <script setup lang="ts">
 import { createRegistration, updateRegistration } from 'src/utils/ory';
-import type { RegistrationFlow } from '@ory/client';
-import { ref } from 'vue';
 import { getDateFromISO } from 'src/utils/common';
-import { useRouter } from 'vue-router';
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
+import { ref } from 'vue';
 import { useAuthStore } from 'src/stores/auth';
+import { useI18n } from 'vue-i18n';
+import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
+import type { RegistrationFlow } from '@ory/client';
 
 const router = useRouter();
 const $q = useQuasar();

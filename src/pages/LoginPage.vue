@@ -67,14 +67,14 @@
 </template>
 
 <script setup lang="ts">
-import { createLogin, submitLogin } from 'src/utils/ory';
 import { LoginFlow } from '@ory/client';
+import { createLogin, submitLogin } from 'src/utils/ory';
+import { getDateFromISO } from 'src/utils/common';
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useQuasar } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
 import { useI18n } from 'vue-i18n';
-import { getDateFromISO } from 'src/utils/common';
+import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const $q = useQuasar();
