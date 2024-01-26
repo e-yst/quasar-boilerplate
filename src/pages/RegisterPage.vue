@@ -89,9 +89,9 @@
 </template>
 
 <script setup lang="ts">
-import { AxiosError } from 'axios';
 import { createRegistration, updateRegistration } from 'src/utils/ory';
 import { getDateFromISO } from 'src/utils/common';
+import { isAxiosError } from 'axios';
 import { ref } from 'vue';
 import { useAuthStore } from 'src/stores/auth';
 import { useI18n } from 'vue-i18n';
@@ -131,7 +131,7 @@ const register = async () => {
     $q.notify({ message: $t('auth.register_succeed'), type: 'positive' });
     router.push({ name: 'index' });
   } catch (e) {
-    if (e instanceof AxiosError) {
+    if (isAxiosError(e)) {
       if (e.response?.data.error.id === 'session_already_available') {
         $q.notify({ message: $t('auth.already_logged_in') });
         router.push({ name: 'index' });
@@ -149,7 +149,7 @@ const getRegFlow = async () => {
     const res = await createRegistration();
     regFlow.value = res;
   } catch (e) {
-    if (e instanceof AxiosError) {
+    if (isAxiosError(e)) {
       if (e.response?.data.error.id === 'session_already_available') {
         $q.notify({ message: $t('auth.already_logged_in') });
         router.push({ name: 'index' });
