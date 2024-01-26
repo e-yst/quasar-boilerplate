@@ -75,16 +75,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { api } from 'src/boot/axios';
+import { computed, ref } from 'vue';
+import { createLogout } from 'src/utils/ory';
+import { useAuthStore } from 'src/stores/auth';
+import { useI18n } from 'vue-i18n';
+import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
 import EssentialLink, {
   EssentialLinkProps,
 } from 'components/EssentialLink.vue';
-import { useAuthStore } from 'src/stores/auth';
-import { createLogout } from 'src/utils/ory';
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import { api } from 'src/boot/axios';
 
 const essentialLinks: EssentialLinkProps[] = [
   {

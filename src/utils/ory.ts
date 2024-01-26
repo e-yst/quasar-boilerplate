@@ -1,7 +1,7 @@
 import { Configuration, FrontendApi } from '@ory/client';
 import type {
-  UpdateRegistrationFlowBody,
   UpdateLoginFlowBody,
+  UpdateRegistrationFlowBody,
 } from '@ory/client';
 
 const frontend = new FrontendApi(

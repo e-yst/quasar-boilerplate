@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import type {
-  SuccessfulNativeRegistration,
-  SuccessfulNativeLogin,
-} from '@ory/client';
 import { getDateFromISO } from 'src/utils/common';
+import type {
+  SuccessfulNativeLogin,
+  SuccessfulNativeRegistration,
+} from '@ory/client';
 
 type AuthDetail = {
   userId: string | undefined;
