@@ -67,6 +67,7 @@
 </template>
 
 <script setup lang="ts">
+import { AxiosError } from 'axios';
 import { LoginFlow } from '@ory/client';
 import { createLogin, submitLogin } from 'src/utils/ory';
 import { getDateFromISO } from 'src/utils/common';
@@ -104,13 +105,15 @@ const login = async () => {
     authStore.setAuthDetailFromLogin(res);
     $q.notify({ message: $t('auth.login_succeed'), type: 'positive' });
     router.push({ name: 'index' });
-  } catch (error) {
-    for (const msg of error.response.data.ui.messages)
-      $q.notify({
-        message: $t(`auth.kratos_error_${msg.id}`),
-        type: 'negative',
-      });
-    password.value = '';
+  } catch (e) {
+    if (e instanceof AxiosError) {
+      for (const msg of e.response?.data.ui.messages)
+        $q.notify({
+          message: $t(`auth.kratos_error_${msg.id}`),
+          type: 'negative',
+        });
+      password.value = '';
+    }
   } finally {
     loading.value = false;
   }
@@ -125,10 +128,12 @@ const getLoginFlow = async () => {
   try {
     const res = await createLogin();
     loginFlow.value = res;
-  } catch (error) {
-    if (error.response.data.error.id === 'session_already_available') {
-      $q.notify({ message: $t('auth.already_logged_in') });
-      router.push({ name: 'index' });
+  } catch (e) {
+    if (e instanceof AxiosError) {
+      if (e.response?.data.error.id === 'session_already_available') {
+        $q.notify({ message: $t('auth.already_logged_in') });
+        router.push({ name: 'index' });
+      }
     }
   }
 };
