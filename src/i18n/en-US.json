@@ -4,8 +4,10 @@
     "back_to": "Back to",
     "confirm_password": "Confirm Password",
     "email": "Email Address",
+    "error_occurred": "Error occurred",
     "field_is_required": "Field is required",
     "greeting": "Hello, {name}!",
+    "kratos_error_4000006": "The provided credentials are invalid, check for spelling mistakes in your password or username, email address, or phone number.",
     "login": "Login",
     "login_caption": "Login below to access your account",
     "login_succeed": "Login succeed",
@@ -16,7 +18,6 @@
     "password_not_match": "Password doesn't match the re-typed password",
     "register": "Register",
     "register_caption": "Don't have an account yet?",
-    "register_succeed": "Register succeed",
-    "kratos_error_4000006": "The provided credentials are invalid, check for spelling mistakes in your password or username, email address, or phone number."
+    "register_succeed": "Register succeed"
   }
 }

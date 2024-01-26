@@ -1,4 +1,8 @@
+import { AxiosError } from 'axios';
 import { Configuration, FrontendApi } from '@ory/client';
+import { Notify } from 'quasar';
+import { i18n } from 'boot/i18n';
+import Router from 'src/router';
 import type {
   UpdateLoginFlowBody,
   UpdateRegistrationFlowBody,
@@ -7,6 +11,7 @@ import type {
 const frontend = new FrontendApi(
   new Configuration({ basePath: process.env.API_URL })
 );
+const { t: $t } = i18n.global;
 
 export const createRegistration = async () => {
   const res = await frontend.createBrowserRegistrationFlow();
@@ -34,14 +39,26 @@ export const createLogin = async (aal?: string, refresh?: boolean) => {
   return res.data;
 };
 
-export async function submitLogin(id: string, body: UpdateLoginFlowBody) {
+export const submitLogin = async (id: string, body: UpdateLoginFlowBody) => {
   const res = await frontend.updateLoginFlow({
     flow: id,
     updateLoginFlowBody: body,
   });
   return res.data;
-}
+};
 export const createLogout = async () => {
   const res = await frontend.createBrowserLogoutFlow();
   return res.data;
+};
+
+export const handleOryError = (e: AxiosError) => {
+  const errorId = e.response?.data.error.id;
+  switch (errorId) {
+    case 'session_already_available':
+      Notify.create({ message: $t('auth.already_logged_in') });
+      Router.push({ name: 'index' });
+      break;
+    default:
+      Notify.create({ message: $t('auth.error_occurred'), type: 'negative' });
+  }
 };
